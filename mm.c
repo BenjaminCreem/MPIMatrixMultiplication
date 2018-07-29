@@ -88,6 +88,7 @@ int main(int argc, char *argv[]){
 
     	MPI_Gather(gatherMat, n, MPI_DOUBLE, &result[x*n], n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     	MPI_Barrier(MPI_COMM_WORLD);
+
     }
     
     endTime = MPI_Wtime();
@@ -106,18 +107,6 @@ int main(int argc, char *argv[]){
 }
 
 
-//Free memory used by first matrix
-void freeMat(double** mat, int n)
-{
-	for(int i=0; i<n; i++)
-	{
-		free(mat[i]);
-	}
-	free(mat);
-}
-
-//Allocate memory for first matrix
-
 //Print singular matrix
 void printMat(double* mat, int n)
 {
@@ -132,23 +121,5 @@ void printMat(double* mat, int n)
     printf("\n");
 }
 
-//Calculate matrix product 
-double* matMultiply(double *mat1, double* mat2, int n)
-{
-	//Return matrix
-	double *result = (double *)malloc(n*n*sizeof(double*));
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < n; j++)
-        {
-            result[i*n+j] = 0;
-            for(int k = 0; k < n; k++)
-            {
-                result[i*n+j] += mat1[i*n+k] * mat2[k*n+j];
-            }
-        }
-    }
-    return result;
-}
 
  
