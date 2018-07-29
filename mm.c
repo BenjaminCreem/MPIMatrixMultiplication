@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
                 mat2[i*n+j] = i+3*j;
             }
         }
-        printf("Number of tasks is %d\n", numranks);
+        printf("Num tasks %d\nN: %d\n", numranks, n);
     }
     //Matrix B is copied to every processor
     MPI_Bcast(mat2, n*n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -67,10 +67,10 @@ int main(int argc, char *argv[]){
     //among processors. 
     int root = 0;
     startTime = MPI_Wtime();
-    //Unsure why I need the +((n/2)-1) here. Without it sometimes it wouldn't go enough. 
-    for(int x = 0; x < (n/numranks)+((n/2)-1); x++)
+    
+    for(int x = 0; x < n*n; x = x + numranks*n)
     {
-        MPI_Scatter(&mat1[x*n], n, MPI_DOUBLE, scatterMat, n, MPI_DOUBLE, root, MPI_COMM_WORLD); 
+        MPI_Scatter(&mat1[x], n, MPI_DOUBLE, scatterMat, n, MPI_DOUBLE, root, MPI_COMM_WORLD); 
         MPI_Barrier(MPI_COMM_WORLD);
 
 	    double sum = 0.0;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
         	sum = 0.0;
     	}
 
-    	MPI_Gather(gatherMat, n, MPI_DOUBLE, &result[x*n], n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    	MPI_Gather(gatherMat, n, MPI_DOUBLE, &result[x], n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     	MPI_Barrier(MPI_COMM_WORLD);
 
     }
