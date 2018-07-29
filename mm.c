@@ -6,9 +6,9 @@
 #include "mpi.h"
 
 //Benjamin Creem
-//May 23 2018
+//July 29th 2018
 int main(int argc, char *argv[]){
-    int n = 10; //matrixes are n x n
+    int n = 1000; //matrixes are n x n
 	
     //Allocating Memory and Assigning Values
 
@@ -67,7 +67,8 @@ int main(int argc, char *argv[]){
     //among processors. 
     int root = 0;
     startTime = MPI_Wtime();
-    for(int x = 0; x < (n/numranks); x++)
+    //Unsure why I need the +((n/2)-1) here. Without it sometimes it wouldn't go enough. 
+    for(int x = 0; x < (n/numranks)+((n/2)-1); x++)
     {
         MPI_Scatter(&mat1[x*n], n, MPI_DOUBLE, scatterMat, n, MPI_DOUBLE, root, MPI_COMM_WORLD); 
         MPI_Barrier(MPI_COMM_WORLD);
@@ -93,11 +94,11 @@ int main(int argc, char *argv[]){
     if(rank == 0)
         printf("Time to complete %f\n", endTime - startTime);
     
-    if(rank == 0)
-    {
-        printf("Result\n");
-        printMat(result, n);
-    }
+    //if(rank == 0)
+    //{
+    //    printf("Result\n");
+    //    printMat(result, n);
+    //}
 
     MPI_Finalize();
 
